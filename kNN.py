@@ -68,5 +68,38 @@ def person():
     resIdx = classify((inArray - min)/interval, normMatx, labels, 4)
     print(result[resIdx-1])
 
-test()
-person()
+#将手写数字转换成向量
+def file2vec(filename):
+    fr = open(filename)
+    vec = zeros((1,1024))
+    for i in range(32):
+        line = fr.readline()
+        for j in range(32):
+            vec[0,i*32+j] = int(line[j])
+    return vec
+
+#手写数字测试
+def hwtest():
+    hwLabels = []
+    trainList = listdir('trainingDigits')
+    m = len(trainList)
+    trainMatx = zeros((m,1024))
+    for i in range(m):
+        fileName = trainList[i]
+        classNum = int(fileName.split('_')[0])
+        hwLabels.append(classNum)
+        trainMatx[i,:] = file2vec('trainingDigits\\'+fileName)
+    testList = listdir('testDigits')
+    nError = 0
+    mTest = len(testList)
+    for j in range(mTest):
+        fileName = testList[j]
+        classNum = int(fileName.split('_')[0])
+        if(classNum != classify(file2vec('testDigits\\'+fileName), trainMatx, hwLabels, 4)):
+            nError += 1
+    print('the total error rate is %f' % (nError/mTest))
+
+
+#hwtest()
+#test()
+#person()
